@@ -79,40 +79,40 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   if(!is_initialized_){
     cout<<"UKF:" <<endl;
     if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
-      /*double px = meas_package.raw_measurements_[0] * cos(meas_package.raw_measurements_[1]);
+      double px = meas_package.raw_measurements_[0] * cos(meas_package.raw_measurements_[1]);
       double py = meas_package.raw_measurements_[0] * sin(meas_package.raw_measurements_[1]);
-      x_ << px, py, 0, 0, 0;*/
-        double rho = meas_package.raw_measurements_(0);
+      x_ << px, py, 0, 0, 0;
+        /*double rho = meas_package.raw_measurements_(0);
         double phi = meas_package.raw_measurements_(1);
-        double rhodot = meas_package.raw_measurements_(2);
+        double rhodot = meas_package.raw_measurements_(2);*/
 
         // polar to cartesian - r * cos(angle) for x and r * sin(angle) for y
         // ***** Middle value for 'v' can be tuned *****
-        x_ << rho * cos(phi), rho * sin(phi), 4, rhodot * cos(phi), rhodot * sin(phi);
-        P_ << std_radr_*std_radr_, 0, 0, 0, 0,
+        //x_ << rho * cos(phi), rho * sin(phi), 4, rhodot * cos(phi), rhodot * sin(phi);
+        /*P_ << std_radr_*std_radr_, 0, 0, 0, 0,
                 0, std_radr_*std_radr_, 0, 0, 0,
                 0, 0, 1, 0, 0,
                 0, 0, 0, std_radphi_, 0,
-                0, 0, 0, 0, std_radphi_;
+                0, 0, 0, 0, std_radphi_;*/
     }
     else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
-      //x_ << meas_package.raw_measurements_[0], meas_package.raw_measurements_[1], 0, 0, 0;
-        x_ << meas_package.raw_measurements_(0), meas_package.raw_measurements_(1), 4, 0.5, 0.0;
+      x_ << meas_package.raw_measurements_[0], meas_package.raw_measurements_[1], 0, 0, 0;
+        //x_ << meas_package.raw_measurements_(0), meas_package.raw_measurements_(1), 4, 0.5, 0.0;
 
         //state covariance matrix
         //***** values can be tuned *****
-        P_ << std_laspx_*std_laspx_, 0, 0, 0, 0,
+        /*P_ << std_laspx_*std_laspx_, 0, 0, 0, 0,
                 0, std_laspy_*std_laspy_, 0, 0, 0,
                 0, 0, 1, 0, 0,
                 0, 0, 0, 1, 0,
-                0, 0, 0, 0, 1;
+                0, 0, 0, 0, 1;*/
     }
 
-    /*P_<<0.15, 0, 0, 0, 0,
+    P_<<0.15, 0, 0, 0, 0,
         0, 0.15, 0, 0, 0,
         0, 0, 0.15, 0, 0,
         0, 0, 0, 0.15, 0,
-        0, 0, 0, 0, 0.15;*/
+        0, 0, 0, 0, 0.15;
 
     time_us_ = meas_package.timestamp_;
     is_initialized_ = true;
@@ -142,7 +142,6 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
  * measurement and this one.
  */
 void UKF::Prediction(double delta_t) {
-    cout<<"Prediction in:"<<endl;
 
     int n = 2 * n_aug_ + 1;
     lambda_ = 3 - n_aug_;
@@ -256,7 +255,6 @@ void UKF::Prediction(double delta_t) {
  */
 void UKF::UpdateLidar(MeasurementPackage meas_package) {
 
-  cout<<"UpdateLidar in:"<<endl;
   n_z_ = n_z_lidar_;
   //create matrix for sigma points in measurement space
   Zsig_ = MatrixXd::Zero(n_z_, 2 * n_aug_ + 1);
@@ -321,8 +319,6 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
     //update state mean and covariance matrix
     double temp = x_(0);
 
-    //cout<<"z - z_pred = "<<(z_ - z_pred)<<endl;
-    //cout<<"k_gain(0) is"<<k_gain(0)<<endl;
     VectorXd z_diff = z_ - z_pred;
 
     //normalize angles
@@ -341,7 +337,6 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
  * @param {MeasurementPackage} meas_package
  */
 void UKF::UpdateRadar(MeasurementPackage meas_package) {
-    cout<<"UpdateRadar in:"<<endl;
     n_z_ = n_z_radar_;
     //create matrix for sigma points in measurement space
     Zsig_ = MatrixXd::Zero(n_z_, 2 * n_aug_ + 1);
@@ -422,8 +417,6 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     //update state mean and covariance matrix
     double temp = x_(0);
 
-    //cout<<"z - z_pred = "<<(z_ - z_pred)<<endl;
-    //cout<<"k_gain(0) is"<<k_gain(0)<<endl;
     VectorXd z_diff = z_ - z_pred;
 
     //normalize angles
@@ -433,7 +426,6 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
         z_diff(1) += 2. * M_PI;
     }
     x_ += (k_gain *z_diff);
-    //cout<<"x(0) increased by :"<<x_(0) - temp<<endl;
 
     P_ -=  k_gain * S * k_gain.transpose();
 
