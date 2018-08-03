@@ -82,30 +82,9 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       double px = meas_package.raw_measurements_[0] * cos(meas_package.raw_measurements_[1]);
       double py = meas_package.raw_measurements_[0] * sin(meas_package.raw_measurements_[1]);
       x_ << px, py, 0, 0, 0;
-        /*double rho = meas_package.raw_measurements_(0);
-        double phi = meas_package.raw_measurements_(1);
-        double rhodot = meas_package.raw_measurements_(2);*/
-
-        // polar to cartesian - r * cos(angle) for x and r * sin(angle) for y
-        // ***** Middle value for 'v' can be tuned *****
-        //x_ << rho * cos(phi), rho * sin(phi), 4, rhodot * cos(phi), rhodot * sin(phi);
-        /*P_ << std_radr_*std_radr_, 0, 0, 0, 0,
-                0, std_radr_*std_radr_, 0, 0, 0,
-                0, 0, 1, 0, 0,
-                0, 0, 0, std_radphi_, 0,
-                0, 0, 0, 0, std_radphi_;*/
     }
     else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
       x_ << meas_package.raw_measurements_[0], meas_package.raw_measurements_[1], 0, 0, 0;
-        //x_ << meas_package.raw_measurements_(0), meas_package.raw_measurements_(1), 4, 0.5, 0.0;
-
-        //state covariance matrix
-        //***** values can be tuned *****
-        /*P_ << std_laspx_*std_laspx_, 0, 0, 0, 0,
-                0, std_laspy_*std_laspy_, 0, 0, 0,
-                0, 0, 1, 0, 0,
-                0, 0, 0, 1, 0,
-                0, 0, 0, 0, 1;*/
     }
 
     P_<<0.15, 0, 0, 0, 0,
