@@ -1,0 +1,4 @@
+C:\Users\ahmed.elkayesh\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\181.4668.70\bin\cmake\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - NMake Makefiles" C:\data\udacity\CarND-Unscented-Kalman-Filter-Project
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/data/udacity/CarND-Unscented-Kalman-Filter-Project/cmake-build-debug
